@@ -1,0 +1,91 @@
+---
+title: "DPPP Week 2 Live Practice"
+author: "Mia"
+date: "4/4/2022"
+output: pdf_document
+---
+
+## Cleaning Global Environment
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+```{r setup, include=FALSE}
+# Load packages
+library(dplyr)
+library(tidyverse)
+library(nycflights13)
+```
+
+## Fliter Rows
+```{r}
+# Simple condition
+filter(flights, month == 1)
+
+# Multiple conditions
+# Include
+months_vector <- c(4,8,12) # Create vectors
+filter(flights, month %in% months_vector)
+dep_time_vector <- seq(500,599) # Create vectors
+filter(flights, dep_time %in% dep_time_vector)
+# Between
+filter(flights, dep_time  >= 500 & dep_time < 600)
+filter(flights, between(dep_time, 500, 599))
+
+# Exclude
+months_vector <- -c(4,8,12)
+filter(flights, 'month' %in% months_vector)
+
+# Remove NA values
+filter(flights, is.na(dep_time)) # filter data
+mean(flights$dep_time, na.rm = TRUE) # remove when doing the math
+```
+
+## Arrange Rows
+```{r setup, include=FALSE}
+# Create a tibble
+df <- tribble(
+  ~num,
+  5,
+  2,
+  NA
+)
+# Arrange
+arrange(df, desc(num)) # NA will also be the last
+```
+
+## Select Columns
+```{r setup, include=FALSE}
+select(flights, origin)
+# Multiple conditions
+select(flights, contains("dep"), origin)# See also ends_with, starts_with
+```
+
+## Rename
+```{r setup, include=FALSE}
+rename(flights, mo = month)
+```
+
+## Mutate new columns
+```{r setup, include=FALSE}
+# Simple mutate
+mutate(flights, 
+  gain = arr_delay - dep_delay)
+
+# Select and Mutate together
+transmute(flights, 
+          origin,
+          gain = arr_delay - dep_delay)
+
+# Mutate lag/lead value
+num_vec <- c(1:5)
+tibble(num_vec, 
+       behind = lag(num_vec),
+       ahead = lead(num_vec))
+       
+# Mutate the rank of position
+num_vec_na <- c(1, 2, 2, NA, 3, 4)     
+tibble(num_vec_na,
+       rank = min_rank(num_vec_na)) # See also percent_rank()
+```
